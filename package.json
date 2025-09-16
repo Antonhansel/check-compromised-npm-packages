@@ -1,0 +1,30 @@
+{
+  "name": "check-compromised-npm-packages",
+  "version": "1.0.0",
+  "description": "Scan your project for compromised npm packages",
+  "main": "check-compromised.js",
+  "type": "module",
+  "bin": {
+    "check-compromised-npm-packages": "./check-compromised.js"
+  },
+  "keywords": [
+    "security",
+    "npm",
+    "supply-chain",
+    "vulnerability",
+    "compromised"
+  ],
+  "author": "Anton",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/check-compromised.git"
+  },
+  "files": [
+    "check-compromised.js",
+    "compromised.json"
+  ]
+}

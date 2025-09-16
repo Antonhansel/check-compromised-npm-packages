@@ -39,11 +39,21 @@ function readJSONSafe(p) {
 }
 
 function loadKnownBad() {
-  const jsonPath = path.join(projectRoot, "compromised.json");
+  // First try to find compromised.json in current working directory
+  let jsonPath = path.join(projectRoot, "compromised.json");
+  
+  // If not found, try to load the bundled version from the package
   if (!fs.existsSync(jsonPath)) {
-    console.error("ERROR: compromised.json not found in project root.");
-    process.exit(2);
+    const bundledPath = path.join(__dirname, "compromised.json");
+    if (fs.existsSync(bundledPath)) {
+      jsonPath = bundledPath;
+    } else {
+      console.error("ERROR: compromised.json not found in project root or bundled with package.");
+      console.error("Please create a compromised.json file in your project root or reinstall the package.");
+      process.exit(2);
+    }
   }
+  
   const data = readJSONSafe(jsonPath);
   if (!data || !Array.isArray(data.packages)) {
     console.error("ERROR: compromised.json is invalid.");

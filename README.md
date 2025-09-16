@@ -8,6 +8,19 @@ Scans your `node_modules` and `package-lock.json` for installed package versions
 
 ## Usage
 
+### Via npx (recommended)
+```bash
+# Check for compromised packages
+npx check-compromised-npm-packages
+
+# Output results as JSON
+npx check-compromised-npm-packages --json
+
+# Show the list of known compromised packages
+npx check-compromised-npm-packages --list
+```
+
+### Local usage
 ```bash
 # Check for compromised packages
 node check-compromised.js
