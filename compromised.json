@@ -1,0 +1,60 @@
+{
+  "packages": [
+    { "name": "@ctrl/tinycolor", "badVersions": ["4.1.1", "4.1.2"] },
+    { "name": "angulartics2", "badVersions": ["14.1.2"] },
+    { "name": "@ctrl/deluge", "badVersions": ["7.2.2"] },
+    { "name": "@ctrl/golang-template", "badVersions": ["1.4.3"] },
+    { "name": "@ctrl/magnet-link", "badVersions": ["4.0.4"] },
+    { "name": "@ctrl/ngx-codemirror", "badVersions": ["7.0.2"] },
+    { "name": "@ctrl/ngx-csv", "badVersions": ["6.0.2"] },
+    { "name": "@ctrl/ngx-emoji-mart", "badVersions": ["9.2.2"] },
+    { "name": "@ctrl/ngx-rightclick", "badVersions": ["4.0.2"] },
+    { "name": "@ctrl/qbittorrent", "badVersions": ["9.7.2"] },
+    { "name": "@ctrl/react-adsense", "badVersions": ["2.0.2"] },
+    { "name": "@ctrl/shared-torrent", "badVersions": ["6.3.2"] },
+    { "name": "@ctrl/torrent-file", "badVersions": ["4.1.2"] },
+    { "name": "@ctrl/transmission", "badVersions": ["7.3.1"] },
+    { "name": "@ctrl/ts-base32", "badVersions": ["4.0.2"] },
+    { "name": "encounter-playground", "badVersions": ["0.0.5"] },
+    {
+      "name": "json-rules-engine-simplified",
+      "badVersions": ["0.2.4", "0.2.1"]
+    },
+    { "name": "koa2-swagger-ui", "badVersions": ["5.11.2", "5.11.1"] },
+    {
+      "name": "@nativescript-community/gesturehandler",
+      "badVersions": ["2.0.35"]
+    },
+    { "name": "@nativescript-community/sentry", "badVersions": ["4.6.43"] },
+    { "name": "@nativescript-community/text", "badVersions": ["1.6.13"] },
+    {
+      "name": "@nativescript-community/ui-collectionview",
+      "badVersions": ["6.0.6"]
+    },
+    { "name": "@nativescript-community/ui-drawer", "badVersions": ["0.1.30"] },
+    { "name": "@nativescript-community/ui-image", "badVersions": ["4.5.6"] },
+    {
+      "name": "@nativescript-community/ui-material-bottomsheet",
+      "badVersions": ["7.2.72"]
+    },
+    {
+      "name": "@nativescript-community/ui-material-core",
+      "badVersions": ["7.2.76"]
+    },
+    {
+      "name": "@nativescript-community/ui-material-core-tabs",
+      "badVersions": ["7.2.76"]
+    },
+    { "name": "ngx-color", "badVersions": ["10.0.2"] },
+    { "name": "ngx-toastr", "badVersions": ["19.0.2"] },
+    { "name": "ngx-trend", "badVersions": ["8.0.1"] },
+    { "name": "react-complaint-image", "badVersions": ["0.0.35"] },
+    { "name": "react-jsonschema-form-conditionals", "badVersions": ["0.3.21"] },
+    { "name": "react-jsonschema-form-extras", "badVersions": ["1.0.4"] },
+    { "name": "rxnt-authentication", "badVersions": ["0.0.6"] },
+    { "name": "rxnt-healthchecks-nestjs", "badVersions": ["1.0.5"] },
+    { "name": "rxnt-kue", "badVersions": ["1.0.7"] },
+    { "name": "swc-plugin-component-annotate", "badVersions": ["1.9.2"] },
+    { "name": "ts-gaussian", "badVersions": ["3.0.6"] }
+  ]
+}
