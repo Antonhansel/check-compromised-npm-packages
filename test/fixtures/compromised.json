@@ -1,0 +1,29 @@
+{
+  "packages": [
+    {
+      "name": "test-package-1",
+      "badVersions": [
+        "1.0.0",
+        "1.0.1"
+      ]
+    },
+    {
+      "name": "test-package-2",
+      "badVersions": [
+        "2.1.0"
+      ]
+    },
+    {
+      "name": "@scope/test-package",
+      "badVersions": [
+        "3.0.0",
+        "3.0.1",
+        "3.0.2"
+      ]
+    },
+    {
+      "name": "safe-package",
+      "badVersions": []
+    }
+  ]
+}

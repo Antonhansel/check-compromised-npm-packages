@@ -212,12 +212,8 @@ describe('Check Compromised Package Tests', () => {
   });
 });
 
-// Cleanup after all tests
-process.on('exit', () => {
-  if (fs.existsSync(testDir)) {
-    fs.rmSync(testDir, { recursive: true, force: true });
-  }
-});
+// Note: Test fixtures are preserved for manual testing
+// They can be manually cleaned up if needed
 
 // Helper function to run CLI
 function runCLI(args) {

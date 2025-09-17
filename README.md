@@ -62,6 +62,8 @@ Place a `compromised.json` file in your project root with the format, or re-use 
 }
 ```
 
+**Current list of compromised packages:** [compromised.json](./compromised.json)
+
 ## Additional security recommendations
 
 This tool works best as part of a broader security strategy. Here are some suggestions that might help:
