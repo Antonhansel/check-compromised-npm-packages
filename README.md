@@ -62,7 +62,7 @@ Place a `compromised.json` file in your project root with the format, or re-use 
 }
 ```
 
-**Current list of compromised packages:** [compromised.json](./compromised.json)
+**Current list of compromised packages:** [compromised.json](https://github.com/Antonhansel/check-compromised-npm-packages/blob/master/compromised.json)
 
 ## Additional security recommendations
 
