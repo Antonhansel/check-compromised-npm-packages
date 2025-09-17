@@ -67,28 +67,47 @@ Place a `compromised.json` file in your project root with the format, or re-use 
 **Sources:**
 - [2024-12-19] [Ongoing supply chain attack targets CrowdStrike npm packages](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
 
+## Understanding the threat: Install script vulnerabilities
+
+As documented in the [npm blog](https://blog.npmjs.org/post/141702881055/package-install-scripts-vulnerability), malicious packages can execute scripts during installation that can:
+
+- **Self-replicate**: Include themselves in new packages and publish them to the registry
+- **Steal credentials**: Access environment variables, tokens, and other sensitive data
+- **Spread laterally**: Compromise other packages owned by the same user
+- **Execute arbitrary code**: Run any malicious code during the install process
+
+This is why `--ignore-scripts` is crucial - it prevents these attack vectors from executing during installation.
+
 ## Additional security recommendations
 
 This tool works best as part of a broader security strategy. Here are some suggestions that might help:
 
 1. **Use this tool alongside npm audit** - scan for exact compromised versions and fail builds on hits
-2. **Consider blocking lifecycle scripts in CI** to reduce attack surface:
+2. **Always block lifecycle scripts in CI** to reduce attack surface:
    ```bash
    # For npm 8+
    npm ci --ignore-scripts
-   # Or set in CI
+   # Or set globally in CI
    export npm_config_ignore_scripts=true
+   # Or configure npm globally
+   npm config set ignore-scripts true
    ```
-3. **Keep dependencies stable**:
+3. **Implement 2FA for publishing** - as mentioned in the npm blog, 2FA helps prevent unauthorized package publishing
+4. **Keep dependencies stable**:
    - Use `npm ci` with a committed lockfile
    - Pin direct dependencies for critical packages
    - Be careful with automatic dependency updates
-4. **Monitor network activity in CI**:
+   - Consider a cooldown period (48-72 hours) for new package releases
+5. **Monitor network activity in CI**:
    - Consider restricting outbound connections to known endpoints
    - Watch for unexpected network activity during installs
-5. **Have a response plan**:
+6. **Use package integrity verification**:
+   - Verify package checksums when possible
+   - Consider using tools that check package integrity
+7. **Have a response plan**:
    - If compromised packages are found, rotate any potentially exposed credentials
    - Review what the malicious code might have accessed
+   - Report malicious packages to support@npmjs.com
 
 ### CI Integration
 
@@ -107,7 +126,35 @@ This tool works best as part of a broader security strategy. Here are some sugge
     exit 1
 ```
 
-**Optional**: You might also consider adding a cooldown period for new package releases - some teams wait 48-72 hours before auto-merging dependency updates to allow time for issues to be discovered.
+### Advanced CI Security
+
+For high-security environments, consider these additional measures:
+
+```yaml
+# Enhanced security example
+- name: Set up secure npm config
+  run: |
+    npm config set ignore-scripts true
+    npm config set audit-level moderate
+    npm config set fund false
+
+- name: Install with integrity checks
+  run: npm ci --ignore-scripts --audit
+
+- name: Scan for compromised packages
+  run: npx check-compromised-npm-packages
+
+- name: Verify no unexpected network calls
+  run: |
+    # Monitor for unexpected outbound connections
+    # This is environment-specific but important for detecting malicious behavior
+```
+
+**Key principles from the community:**
+- **Defense in depth**: Use multiple layers of security checks
+- **Fail fast**: Stop builds immediately when issues are detected  
+- **Audit everything**: Regular security scanning and monitoring
+- **Least privilege**: Only install what you need, when you need it
 
 ## Origin
 
