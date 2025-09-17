@@ -157,7 +157,7 @@ EXIT CODES:
   1  Compromised packages found
   2  Error (missing or invalid compromised.json)
 
-For more information, visit: https://github.com/yourusername/check-compromised
+For more information, visit: https://github.com/Antonhansel/check-compromised
 `);
 }
 
