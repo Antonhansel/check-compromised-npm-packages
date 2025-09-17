@@ -264,19 +264,24 @@ function main() {
     }
     
     let checkedCount = 0;
+    let compromisedCount = 0;
+    
+    // Show all installed packages
     for (const [name, versions] of merged.entries()) {
-      if (badIndex.has(name)) {
-        for (const v of versions) {
-          checkedCount++;
-          if (badIndex.get(name).has(v)) {
-            console.log(`❌ ${name}@${v} - COMPROMISED`);
-          } else {
-            console.log(`✅ ${name}@${v} - OK`);
-          }
+      for (const v of versions) {
+        checkedCount++;
+        if (badIndex.has(name) && badIndex.get(name).has(v)) {
+          console.log(`❌ ${name}@${v} - COMPROMISED`);
+          compromisedCount++;
+        } else if (badIndex.has(name)) {
+          console.log(`✅ ${name}@${v} - OK (monitored)`);
+        } else {
+          console.log(`⚪ ${name}@${v} - not monitored`);
         }
       }
     }
     console.log(`\nChecked ${checkedCount} package versions against ${knownBad.packages.length} known compromised packages.`);
+    console.log(`Found ${compromisedCount} compromised packages.`);
   }
 
   if (OUTPUT_JSON) {
