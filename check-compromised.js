@@ -23,6 +23,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { compare, uniqFindings, add, collectFromPackageLock, readJSONSafe } from "./lib/core.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = process.cwd();
@@ -32,13 +33,6 @@ const SHOW_LIST = argv.has("--list");
 const VERBOSE = argv.has("--verbose");
 const SHOW_HELP = argv.has("--help") || argv.has("-h");
 
-function readJSONSafe(p) {
-  try {
-    return JSON.parse(fs.readFileSync(p, "utf8"));
-  } catch {
-    return null;
-  }
-}
 
 function loadKnownBad() {
   // First try to find compromised.json in current working directory
@@ -64,39 +58,7 @@ function loadKnownBad() {
   return data;
 }
 
-function add(map, name, version) {
-  if (!map.has(name)) map.set(name, new Set());
-  map.get(name).add(String(version));
-}
 
-function collectFromPackageLock() {
-  const hits = new Map();
-  const lockPath = path.join(projectRoot, "package-lock.json");
-  if (!fs.existsSync(lockPath)) return hits;
-
-  const lock = readJSONSafe(lockPath);
-  if (!lock) return hits;
-
-  if (lock.packages && typeof lock.packages === "object") {
-    for (const [key, meta] of Object.entries(lock.packages)) {
-      if (!meta || !meta.version) continue;
-      const name = key.replace(/^node_modules\//, "");
-      add(hits, name, meta.version);
-    }
-  }
-
-  function walkDeps(obj) {
-    if (!obj || typeof obj !== "object") return;
-    for (const [name, meta] of Object.entries(obj)) {
-      if (!meta) continue;
-      if (meta.version) add(hits, name, meta.version);
-      if (meta.dependencies) walkDeps(meta.dependencies);
-    }
-  }
-  if (lock.dependencies) walkDeps(lock.dependencies);
-
-  return hits;
-}
 
 function collectFromNodeModules() {
   const hits = new Map();
@@ -151,32 +113,6 @@ function collectFromNodeModules() {
   return hits;
 }
 
-function compare(installedMap, knownBad) {
-  const badIndex = new Map();
-  for (const entry of knownBad.packages) {
-    badIndex.set(entry.name, new Set(entry.badVersions.map(String)));
-  }
-  const findings = [];
-  for (const [name, versions] of installedMap.entries()) {
-    if (!badIndex.has(name)) continue;
-    for (const v of versions) {
-      if (badIndex.get(name).has(v)) {
-        findings.push({ name, version: v });
-      }
-    }
-  }
-  return findings;
-}
-
-function uniqFindings(findings) {
-  const seen = new Set();
-  return findings.filter((f) => {
-    const key = `${f.name}@${f.version}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
 
 function showHelp() {
   console.log(`
@@ -246,7 +182,7 @@ function main() {
   }
 
   const nm = collectFromNodeModules();
-  const lock = collectFromPackageLock();
+  const lock = collectFromPackageLock(projectRoot);
 
   const merged = new Map(lock);
   for (const [name, vers] of nm.entries()) {
@@ -286,6 +222,9 @@ function main() {
 
   if (OUTPUT_JSON) {
     console.log(JSON.stringify({ findings }, null, 2));
+    if (findings.length > 0) {
+      process.exit(1);
+    }
   } else if (findings.length === 0) {
     console.log("✅ No compromised packages found.");
   } else {
