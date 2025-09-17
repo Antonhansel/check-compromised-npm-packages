@@ -64,6 +64,9 @@ Place a `compromised.json` file in your project root with the format, or re-use 
 
 **Current list of compromised packages:** [compromised.json](https://github.com/Antonhansel/check-compromised-npm-packages/blob/master/compromised.json)
 
+**Sources:**
+- [2024-12-19] [Ongoing supply chain attack targets CrowdStrike npm packages](https://socket.dev/blog/ongoing-supply-chain-attack-targets-crowdstrike-npm-packages)
+
 ## Additional security recommendations
 
 This tool works best as part of a broader security strategy. Here are some suggestions that might help:
