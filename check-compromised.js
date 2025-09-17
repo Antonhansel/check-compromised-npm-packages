@@ -29,6 +29,8 @@ const projectRoot = process.cwd();
 const argv = new Set(process.argv.slice(2));
 const OUTPUT_JSON = argv.has("--json");
 const SHOW_LIST = argv.has("--list");
+const VERBOSE = argv.has("--verbose");
+const SHOW_HELP = argv.has("--help") || argv.has("-h");
 
 function readJSONSafe(p) {
   try {
@@ -176,7 +178,59 @@ function uniqFindings(findings) {
   });
 }
 
+function showHelp() {
+  console.log(`
+Check Compromised NPM Packages v1.0.1
+
+A security tool to scan your project for compromised npm packages by comparing
+installed versions against a known list of malicious versions.
+
+USAGE:
+  check-compromised-npm-packages [OPTIONS]
+
+OPTIONS:
+  --help, -h          Show this help message
+  --verbose           Show individual package status (not found)
+  --json              Output results in JSON format
+  --list              Show the list of known compromised packages
+
+EXAMPLES:
+  # Basic scan
+  npx check-compromised-npm-packages
+
+  # Verbose output showing each package checked
+  npx check-compromised-npm-packages --verbose
+
+  # JSON output for CI integration
+  npx check-compromised-npm-packages --json
+
+  # Show known compromised packages list
+  npx check-compromised-npm-packages --list
+
+DESCRIPTION:
+  This tool scans your node_modules and package-lock.json for installed
+  package versions and compares them against a known list of compromised
+  versions. It's designed to complement npm audit by catching supply chain
+  attacks that may not yet have CVEs.
+
+  The tool looks for a compromised.json file in your project root, or falls
+  back to the bundled version if not found.
+
+EXIT CODES:
+  0  No compromised packages found
+  1  Compromised packages found
+  2  Error (missing or invalid compromised.json)
+
+For more information, visit: https://github.com/yourusername/check-compromised
+`);
+}
+
 function main() {
+  if (SHOW_HELP) {
+    showHelp();
+    process.exit(0);
+  }
+
   const knownBad = loadKnownBad();
 
   if (SHOW_LIST) {
@@ -201,6 +255,29 @@ function main() {
   }
 
   const findings = uniqFindings(compare(merged, knownBad));
+
+  if (VERBOSE) {
+    console.log("Scanning installed packages...");
+    const badIndex = new Map();
+    for (const entry of knownBad.packages) {
+      badIndex.set(entry.name, new Set(entry.badVersions.map(String)));
+    }
+    
+    let checkedCount = 0;
+    for (const [name, versions] of merged.entries()) {
+      if (badIndex.has(name)) {
+        for (const v of versions) {
+          checkedCount++;
+          if (badIndex.get(name).has(v)) {
+            console.log(`❌ ${name}@${v} - COMPROMISED`);
+          } else {
+            console.log(`✅ ${name}@${v} - OK`);
+          }
+        }
+      }
+    }
+    console.log(`\nChecked ${checkedCount} package versions against ${knownBad.packages.length} known compromised packages.`);
+  }
 
   if (OUTPUT_JSON) {
     console.log(JSON.stringify({ findings }, null, 2));
